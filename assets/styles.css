@@ -1,0 +1,400 @@
+fmini.js-plotly-plot .plotly .modebar {
+  padding-top: 5%;
+  margin-right: 3.5%;
+}
+
+body {
+  background-color: #f2f2f2;
+  /* margin: 5%; */
+}
+
+.two.columns {
+  width: 16.25%;
+}
+
+.column,
+.columns {
+  margin-left: 0.5%;
+}
+
+.pretty_container {
+  margin-left: 5%;
+  margin-right: 5%;
+  border-radius: 5px;
+  /* background-color: #FFFFFF;
+  margin: 10px;
+  padding: 15px;
+  position: relative;
+  box-shadow: 2px 2px 2px lightgrey; */
+}
+
+.bare_container {
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+}
+
+.dcc_control {
+  margin: 0;
+  padding: 5px;
+  width: calc(100%-40px);
+}
+
+.control_label {
+  margin: 0;
+  padding: 10px;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+  width: calc(100%-40px);
+}
+
+.rc-slider {
+  margin-left: 0px;
+  padding-left: 0px;
+}
+
+.flex-display {
+  display: flex;
+}
+
+.container-display {
+  display: flex;
+}
+
+#individual_graph,
+#aggregate_graph {
+  width: calc(100% - 30px);
+  position: absolute;
+}
+
+#count_graph {
+  position: absolute;
+  height: calc(100% - 30px);
+  width: calc(100% - 30px);
+}
+
+#countGraphContainer {
+  flex: 5;
+  position: relative;
+}
+
+#header {
+  align-items: center;
+}
+
+#learn-more-button {
+  text-align: center;
+  height: 100%;
+  padding: 0 20px;
+  text-transform: none;
+  font-size: 15px;
+  float: right;
+  margin-right: 10px;
+  margin-top: 30px;
+}
+#title {
+  text-align: center;
+}
+
+.inside_container {
+  border-radius: 5px;
+  background-color: #FFFFFF;
+  margin: 10px;
+  padding: 15px;
+  position: relative;
+  /* box-shadow: 2px 2px 2px lightgrey; */
+}
+
+.mini_container {
+  border-radius: 5px;
+  background-color: #FFFFFF;
+  margin: 10px;
+  padding: 15px;
+  position: relative;
+  box-shadow: 2px 2px 2px lightgrey;
+}
+
+#right-column {
+  display: flex;
+  flex-direction: column;
+}
+
+#descriptorBlock {
+  flex: 1;
+  position: relative;
+}
+#up-option-1 {
+  flex: 1;
+  position: relative;
+}
+#up-option-2 {
+  flex: 1;
+  position: relative;
+}
+#kpi1 {
+  flex: 2;
+  position: relative;
+}
+#kpi2 {
+  flex: 2;
+  position: relative;
+}
+#kpi3 {
+  flex: 2;
+  position: relative;
+}
+#margin-label {
+  flex: 1;
+  position: relative;
+}
+#margin-label2 {
+  flex: 1;
+  position: relative;
+}
+#margin-label3 {
+  flex: 1;
+  position: relative;
+}
+#icon1 {
+  flex: 1;
+  position: relative;
+}
+#up-option-3 {
+  flex: 1;
+  position: relative;
+}
+
+#explain1a {
+  flex: 1;
+}
+
+#explain1b {
+  flex: 3;
+}
+
+#explain2a {
+  flex: 1;
+}
+
+#explain2b {
+  flex: 3;
+}
+#explain3a {
+  flex: 1;
+}
+
+#explain3b {
+  flex: 3;
+}
+#explain4a {
+  flex: 1;
+}
+
+#explain4b {
+  flex: 3;
+}
+
+#explain5a {
+  flex: 1;
+}
+
+#explain5b {
+  flex: 3;
+}
+#explain6a {
+  flex: 1;
+}
+
+#explain6b {
+  flex: 3;
+}
+#ebit-family-block {
+  flex: 2;
+  position: relative;
+}
+
+#bubble-plot-container {
+  flex: 5;
+  position: relative;
+}
+
+#metric-plot-container {
+  flex: 5;
+  position: relative;
+}
+
+#pareto {
+  flex: 3;
+}
+
+#pareto-box {
+  flex: 1;
+}
+
+#x-select-box {
+  flex: 1;
+}
+
+#y-select-box {
+  flex: 1;
+}
+
+#color-select-box {
+  flex: 1;
+}
+
+#line-box {
+  flex: 1;
+}
+
+#bubble-highy-container {
+  flex: 1;
+}
+
+#bubble-highx-container {
+  flex: 1;
+}
+
+#bubble-lowy-container {
+  flex: 1;
+}
+
+#bubble-lowx-container {
+  flex: 1;
+}
+
+#metric-highy-container {
+  flex: 1;
+}
+
+#metric-highx-container {
+  flex: 1;
+}
+
+#metric-lowy-container {
+  flex: 1;
+}
+
+#metric-lowx-container {
+  flex: 1;
+}
+
+#product-box {
+  flex: 1;
+}
+
+#consolidate-box {
+  flex: 2;
+}
+
+
+#pie {
+  flex: 2;
+}
+
+#opportunity{
+  flex: 3;
+}
+
+#violin {
+  flex: 2;
+}
+
+#violin_plot {
+  flex: 2;
+}
+
+#upload-table-block {
+  flex: 2;
+}
+
+#opportunity-table-block {
+  flex: 1;
+}
+
+#descriptorBlock {
+  flex: 1;
+}
+
+#bubble-controls {
+  flex: 2;
+}
+
+#metric-controls {
+  flex: 2;
+}
+
+#bestOrWorstBlock {
+  flex: 1;
+}
+
+#descriptorRangeBlock {
+  flex: 1;
+}
+
+#daqSwitchBlock {
+  flex: 1;
+}
+#sunburst {
+  flex: 1;
+}
+
+#util{
+  flex:2;
+}
+
+#line-in {
+  flex: 1;
+}
+
+#line-out {
+  flex: 1;
+}
+#rev {
+  flex: 1;
+}
+
+#rev-percent {
+  flex: 1;
+}
+
+#products {
+  flex: 1;
+}
+
+#products-percent {
+  flex: 1;
+}
+
+#margin-rev {
+  flex: 1;
+}
+
+#margin-rev-percent {
+  flex: 1;
+}
+
+#margin-products {
+  flex: 1;
+}
+
+#margin-products-percent {
+  flex: 1;
+}
+#ratio {
+  flex: 1;
+}
+
+#tripleContainer {
+  display: flex;
+  flex: 3;
+}
+
+#mainContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+#pie_graph > div > div > svg:nth-child(3) > g.infolayer > g.legend {
+  pointer-events: all;
+  transform: translate(30px, 349px);
+}
