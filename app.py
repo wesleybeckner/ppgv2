@@ -12,6 +12,7 @@ import dash_daq as daq
 import dash_bootstrap_components as dbc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
+from dash.exceptions import PreventUpdate
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import plotly.express as px
@@ -924,7 +925,7 @@ html.Div(className='pretty_container', children=[KPIS,
                                            time_column,
                                            groupby_primary,
                                            groupby_secondary,
-                                           chart_type='Parallel Coordinates (Time)')
+                                           chart_type='Distribution')
                         ),
             html.Div([
             dcc.Loading(
@@ -1283,11 +1284,13 @@ def display_primary_plot(filter_category, filter_selected, rows, data, tab,
                         groupby_secondary, relayoutData, time_column,
                         chart_type, data_type, one, two, three, time,
                         data_type_analytics):
-    production_df = global_df
+
+
     # production_df = pd.read_json(production_df, convert_dates=dates)
-
-
+    ctx = dash.callback_context
+    print(ctx.triggered[0]['prop_id'])
     if (tab == 'tab-2') and (data is not None) and (len(rows) > 0):
+        production_df = global_df
         margin_column = "{} By {}".format(volume_column, time_column)
         # for col in time_components:
         #     production_df[col] = pd.to_timedelta(production_df[col], unit='ms')
@@ -1314,36 +1317,43 @@ def display_primary_plot(filter_category, filter_selected, rows, data, tab,
             data_type_analytics)
     # elif (tab == 'tab-2'):
     #     return None
-    margin_column = "{} By {}".format(volume_column, time_column)
-    if type(filter_selected) == str:
-        filter_selected = [filter_selected]
 
-    production_df = production_df.loc[production_df[filter_category].isin(
-        filter_selected)]
-    # for col in time_components:
-    #     production_df[col] = pd.to_timedelta(production_df[col], unit='ms')
-    production_df[margin_column] = production_df[volume_column] /\
-        (production_df[time_column])
-    production_df = production_df.loc[production_df[margin_column] < np.inf]
-    production_df = production_df.loc[(production_df[margin_column] <
-        production_df[margin_column].quantile(0.997))]
-    print('prim filt ', production_df.shape)
 
-    if relayoutData is not None:
-        if 'xaxis.range[0]' in relayoutData.keys():
-            start = pd.to_datetime(relayoutData['xaxis.range[0]'])
-            end = pd.to_datetime(relayoutData['xaxis.range[1]'])
-            production_df = production_df.loc[(production_df[dates[-1]] < end) &
-                                              (production_df[dates[-1]] > start)]
+    elif (tab != 'tab-2') &\
+        (ctx.triggered[0]['prop_id'] != 'opportunity-table.derived_virtual_data'):
+        production_df = global_df
+        margin_column = "{} By {}".format(volume_column, time_column)
+        if type(filter_selected) == str:
+            filter_selected = [filter_selected]
+
+        production_df = production_df.loc[production_df[filter_category].isin(
+            filter_selected)]
+        # for col in time_components:
+        #     production_df[col] = pd.to_timedelta(production_df[col], unit='ms')
+        production_df[margin_column] = production_df[volume_column] /\
+            (production_df[time_column])
+        production_df = production_df.loc[production_df[margin_column] < np.inf]
+        production_df = production_df.loc[(production_df[margin_column] <
+            production_df[margin_column].quantile(0.997))]
+        print('prim filt ', production_df.shape)
+
+        if relayoutData is not None:
+            if 'xaxis.range[0]' in relayoutData.keys():
+                start = pd.to_datetime(relayoutData['xaxis.range[0]'])
+                end = pd.to_datetime(relayoutData['xaxis.range[1]'])
+                production_df = production_df.loc[(production_df[dates[-1]] < end) &
+                                                  (production_df[dates[-1]] > start)]
+            return make_primary_plot(production_df,
+              margin_column, volume_column, groupby_primary,
+              groupby_secondary, time_column, chart_type=chart_type,
+              data_type=data_type)
+
         return make_primary_plot(production_df,
           margin_column, volume_column, groupby_primary,
           groupby_secondary, time_column, chart_type=chart_type,
           data_type=data_type)
-
-    return make_primary_plot(production_df,
-      margin_column, volume_column, groupby_primary,
-      groupby_secondary, time_column, chart_type=chart_type,
-      data_type=data_type)
+    else:
+        raise PreventUpdate
 
 @app.callback(
     Output('secondary_plot', 'figure'),
@@ -1364,6 +1374,10 @@ def display_primary_plot(filter_category, filter_selected, rows, data, tab,
 def display_secondary_plot(filter_category, filter_selected, rows, data, tab,
                         production_json, margin_column, groupby_primary,
                         groupby_secondary, time_column, chart_type, data_type):
+    # ctx = dash.callback_context
+    #
+    # if (ctx.triggered[0]['prop_id'] == 'render-button.n_clicks') or\
+    #         (ctx.triggered[0]['prop_id'] == 'margin-upload.children'):
     production_df = global_df
     # production_df = pd.read_json(production_df, convert_dates=dates)
     margin_column = "{} By {}".format(volume_column, time_column)
@@ -1379,6 +1393,8 @@ def display_secondary_plot(filter_category, filter_selected, rows, data, tab,
     production_df = production_df.loc[production_df[margin_column] < np.inf]
     production_df = production_df.loc[(production_df[margin_column] <
         production_df[margin_column].quantile(0.997))]
+    if tab == 'tab-2':
+        production_df = production_df.iloc[:20]
     print('secon filt ', production_df.shape)
     return make_secondary_plot(production_df,
         margin_column, time_column, groupby_primary,
