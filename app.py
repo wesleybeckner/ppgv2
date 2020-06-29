@@ -880,14 +880,14 @@ html.Div(className='pretty_container', children=[KPIS,
     html.Div([
         html.Div([
         dcc.Tabs(id='tabs-control', value='tab-2', children=[
-            dcc.Tab(label='Upload', value='tab-4',
-                    children=[UPLOAD]),
+            # dcc.Tab(label='Upload', value='tab-4',
+            #         children=[UPLOAD]),
             dcc.Tab(label='Analytics', value='tab-2',
                     children=[ANALYTICS]),
             dcc.Tab(label='Visualization', value='tab-1',
                     children=[VISUALIZATION]),
-            dcc.Tab(label='About', value='tab-3',
-                    children=[ABOUT]),
+            # dcc.Tab(label='About', value='tab-3',
+            #         children=[ABOUT]),
                     ]),
             ], className='mini_container',
                id='descriptorBlock',
