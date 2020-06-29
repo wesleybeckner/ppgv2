@@ -12,7 +12,6 @@ import dash_daq as daq
 import dash_bootstrap_components as dbc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
-# from dash.exceptions import PreventUpdate
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import plotly.express as px
@@ -130,7 +129,7 @@ def make_primary_plot(production_df,
                    filter_selected=None,
                    filter_category=None,
                    results_df=None,
-                   chart_type='Parallel Coordinates (Time)',
+                   chart_type='Distribution',
                    all_lines=True,
                    sort_by='mean',
                    data_type='Rate (Gal/Hr)',
@@ -666,25 +665,15 @@ HIDDEN = html.Div([
 ])
 
 ABOUT = html.Div([dcc.Markdown('''
-
 ###### This dashboard evaluates Work Cell correlation with Planned vs Actual production ######
-
 **KPIs:**
-
 --KPI Description--
-
 **Charts:**
-
 --Primary, Secondary, Tertiary Chart Description--
-
 **Controls:**
-
 --Controls Tab Description--
-
 Visualization Tab:
-
 --Analytics Tab Description--
-
 ''')],style={'margin-top': '20px',
              'max-height': '500px',
              'overflow': 'scroll'})
@@ -925,7 +914,7 @@ html.Div(className='pretty_container', children=[KPIS,
                                            time_column,
                                            groupby_primary,
                                            groupby_secondary,
-                                           chart_type='Distribution')
+                                           chart_type='Parallel Coordinates (Time)')
                         ),
             html.Div([
             dcc.Loading(
@@ -1029,7 +1018,7 @@ def update_production_df_and_table(list_of_contents, preset_file, list_of_names,
         # df = pd.read_csv('data/{}.csv'.format(preset_file))
         columns = [{'label': i, 'value': i} for i in production_df.columns]
         columns_table = [{"name": i, "id": i} for i in production_df.columns]
-
+        print(production_df.head())
         return [production_df.to_json()]
 
 # @app.callback(
@@ -1149,8 +1138,6 @@ def display_opportunity(filter_category, filter_selected, rows, data, tab,
                         groupby_secondary, clickData, selectedData,
                         relayoutData, time_column, time):
     production_df = global_df
-    ctx = dash.callback_context
-    print(ctx.triggered[0]['prop_id'])
     if (tab == 'tab-2') and (data is not None) and (len(rows) > 0):
         # production_df = pd.read_json(production_df, convert_dates=dates)
 #         total_volume = pd.DataFrame(data)['Parent Batch Actual Qty, sum'].sum()/1e6
@@ -1286,13 +1273,11 @@ def display_primary_plot(filter_category, filter_selected, rows, data, tab,
                         groupby_secondary, relayoutData, time_column,
                         chart_type, data_type, one, two, three, time,
                         data_type_analytics):
-
-
+    production_df = global_df
     # production_df = pd.read_json(production_df, convert_dates=dates)
-    ctx = dash.callback_context
+
 
     if (tab == 'tab-2') and (data is not None) and (len(rows) > 0):
-        production_df = global_df
         margin_column = "{} By {}".format(volume_column, time_column)
         # for col in time_components:
         #     production_df[col] = pd.to_timedelta(production_df[col], unit='ms')
@@ -1319,43 +1304,36 @@ def display_primary_plot(filter_category, filter_selected, rows, data, tab,
             data_type_analytics)
     # elif (tab == 'tab-2'):
     #     return None
+    margin_column = "{} By {}".format(volume_column, time_column)
+    if type(filter_selected) == str:
+        filter_selected = [filter_selected]
 
+    production_df = production_df.loc[production_df[filter_category].isin(
+        filter_selected)]
+    # for col in time_components:
+    #     production_df[col] = pd.to_timedelta(production_df[col], unit='ms')
+    production_df[margin_column] = production_df[volume_column] /\
+        (production_df[time_column])
+    production_df = production_df.loc[production_df[margin_column] < np.inf]
+    production_df = production_df.loc[(production_df[margin_column] <
+        production_df[margin_column].quantile(0.997))]
+    print('prim filt ', production_df.shape)
 
-    elif (tab != 'tab-2') &\
-        (ctx.triggered[0]['prop_id'] != 'opportunity-table.derived_virtual_data'):
-        production_df = global_df
-        margin_column = "{} By {}".format(volume_column, time_column)
-        if type(filter_selected) == str:
-            filter_selected = [filter_selected]
-
-        production_df = production_df.loc[production_df[filter_category].isin(
-            filter_selected)]
-        # for col in time_components:
-        #     production_df[col] = pd.to_timedelta(production_df[col], unit='ms')
-        production_df[margin_column] = production_df[volume_column] /\
-            (production_df[time_column])
-        production_df = production_df.loc[production_df[margin_column] < np.inf]
-        production_df = production_df.loc[(production_df[margin_column] <
-            production_df[margin_column].quantile(0.997))]
-        print('prim filt ', production_df.shape)
-
-        if relayoutData is not None:
-            if 'xaxis.range[0]' in relayoutData.keys():
-                start = pd.to_datetime(relayoutData['xaxis.range[0]'])
-                end = pd.to_datetime(relayoutData['xaxis.range[1]'])
-                production_df = production_df.loc[(production_df[dates[-1]] < end) &
-                                                  (production_df[dates[-1]] > start)]
-            return make_primary_plot(production_df,
-              margin_column, volume_column, groupby_primary,
-              groupby_secondary, time_column, chart_type=chart_type,
-              data_type=data_type)
-
+    if relayoutData is not None:
+        if 'xaxis.range[0]' in relayoutData.keys():
+            start = pd.to_datetime(relayoutData['xaxis.range[0]'])
+            end = pd.to_datetime(relayoutData['xaxis.range[1]'])
+            production_df = production_df.loc[(production_df[dates[-1]] < end) &
+                                              (production_df[dates[-1]] > start)]
         return make_primary_plot(production_df,
           margin_column, volume_column, groupby_primary,
           groupby_secondary, time_column, chart_type=chart_type,
           data_type=data_type)
-    # else:
-    #     raise PreventUpdate
+
+    return make_primary_plot(production_df,
+      margin_column, volume_column, groupby_primary,
+      groupby_secondary, time_column, chart_type=chart_type,
+      data_type=data_type)
 
 @app.callback(
     Output('secondary_plot', 'figure'),
@@ -1376,10 +1354,6 @@ def display_primary_plot(filter_category, filter_selected, rows, data, tab,
 def display_secondary_plot(filter_category, filter_selected, rows, data, tab,
                         production_json, margin_column, groupby_primary,
                         groupby_secondary, time_column, chart_type, data_type):
-    # ctx = dash.callback_context
-    #
-    # if (ctx.triggered[0]['prop_id'] == 'render-button.n_clicks') or\
-    #         (ctx.triggered[0]['prop_id'] == 'margin-upload.children'):
     production_df = global_df
     # production_df = pd.read_json(production_df, convert_dates=dates)
     margin_column = "{} By {}".format(volume_column, time_column)
@@ -1395,8 +1369,6 @@ def display_secondary_plot(filter_category, filter_selected, rows, data, tab,
     production_df = production_df.loc[production_df[margin_column] < np.inf]
     production_df = production_df.loc[(production_df[margin_column] <
         production_df[margin_column].quantile(0.997))]
-    if tab == 'tab-2':
-        production_df = production_df.iloc[:20]
     print('secon filt ', production_df.shape)
     return make_secondary_plot(production_df,
         margin_column, time_column, groupby_primary,
