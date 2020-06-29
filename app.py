@@ -1029,7 +1029,7 @@ def update_production_df_and_table(list_of_contents, preset_file, list_of_names,
         # df = pd.read_csv('data/{}.csv'.format(preset_file))
         columns = [{'label': i, 'value': i} for i in production_df.columns]
         columns_table = [{"name": i, "id": i} for i in production_df.columns]
-        print(production_df.head())
+
         return [production_df.to_json()]
 
 # @app.callback(
@@ -1149,6 +1149,8 @@ def display_opportunity(filter_category, filter_selected, rows, data, tab,
                         groupby_secondary, clickData, selectedData,
                         relayoutData, time_column, time):
     production_df = global_df
+    ctx = dash.callback_context
+    print(ctx.triggered[0]['prop_id'])
     if (tab == 'tab-2') and (data is not None) and (len(rows) > 0):
         # production_df = pd.read_json(production_df, convert_dates=dates)
 #         total_volume = pd.DataFrame(data)['Parent Batch Actual Qty, sum'].sum()/1e6
@@ -1288,7 +1290,7 @@ def display_primary_plot(filter_category, filter_selected, rows, data, tab,
 
     # production_df = pd.read_json(production_df, convert_dates=dates)
     ctx = dash.callback_context
-    print(ctx.triggered[0]['prop_id'])
+
     if (tab == 'tab-2') and (data is not None) and (len(rows) > 0):
         production_df = global_df
         margin_column = "{} By {}".format(volume_column, time_column)
