@@ -12,7 +12,7 @@ import dash_daq as daq
 import dash_bootstrap_components as dbc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
-from dash.exceptions import PreventUpdate
+# from dash.exceptions import PreventUpdate
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import plotly.express as px
@@ -130,7 +130,7 @@ def make_primary_plot(production_df,
                    filter_selected=None,
                    filter_category=None,
                    results_df=None,
-                   chart_type='Distribution',
+                   chart_type='Parallel Coordinates (Time)',
                    all_lines=True,
                    sort_by='mean',
                    data_type='Rate (Gal/Hr)',
@@ -1354,8 +1354,8 @@ def display_primary_plot(filter_category, filter_selected, rows, data, tab,
           margin_column, volume_column, groupby_primary,
           groupby_secondary, time_column, chart_type=chart_type,
           data_type=data_type)
-    else:
-        raise PreventUpdate
+    # else:
+    #     raise PreventUpdate
 
 @app.callback(
     Output('secondary_plot', 'figure'),
